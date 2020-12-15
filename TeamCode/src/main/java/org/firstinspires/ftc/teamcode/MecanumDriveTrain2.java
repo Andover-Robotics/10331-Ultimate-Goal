@@ -58,7 +58,7 @@ import com.qualcomm.robotcore.util.Range;
 
 //@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Tank Drive TeleOp", group = "Iterative Opmode")
 //@Disabled
-public class MecanumDriveTrain extends OpMode {
+public class MecanumDriveTrain2 extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private Motor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
@@ -175,7 +175,7 @@ public class MecanumDriveTrain extends OpMode {
         /*
         if (strafe < 0) {
             telemetry.addLine("Trying to strafe left");
-            //these -1 and 1 values based off the assumption -1 is backwards and 1 is forwards
+            //these -1 and 1 values based off the assumption -1 is backwards and 1 is forwards 
             //https://gm0.org/en/stable/docs/software/mecanum-drive.html has a good diagram for understanding direction of wheels in relation to movemenet of robot
             leftFrontDrive.set(-1);
             rightFrontDrive.set(1);
