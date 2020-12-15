@@ -89,7 +89,7 @@ public class MecanumDriveTrain extends OpMode {
         intakeFlywheel = hardwareMap.get(DcMotor.class, "intakeFlywheel");
         //outtakeFlywheel = hardwareMap.get(DcMotor.class, "outtakeFlywheel");
 
-       // servo = hardwareMap.get(Servo.class, "servo");
+        // servo = hardwareMap.get(Servo.class, "servo");
 
         // Initialize our Mecanum Drive using our motors as parameters
         // Set default power of mecanum drive to 1.0
@@ -175,7 +175,7 @@ public class MecanumDriveTrain extends OpMode {
         /*
         if (strafe < 0) {
             telemetry.addLine("Trying to strafe left");
-            //these -1 and 1 values based off the assumption -1 is backwards and 1 is forwards 
+            //these -1 and 1 values based off the assumption -1 is backwards and 1 is forwards
             //https://gm0.org/en/stable/docs/software/mecanum-drive.html has a good diagram for understanding direction of wheels in relation to movemenet of robot
             leftFrontDrive.set(-1);
             rightFrontDrive.set(1);
@@ -183,7 +183,6 @@ public class MecanumDriveTrain extends OpMode {
             rightBackDrive.set(-1);
             //driveTrain.setStrafe(strafe, drive);
         }
-
         else if (strafe > 0) {
             telemetry.addLine("Trying to strafe right");
             leftFrontDrive.set(1);
@@ -191,7 +190,6 @@ public class MecanumDriveTrain extends OpMode {
             leftBackDrive.set(-1);
             rightBackDrive.set(1);
         }
-
         else {
             leftFrontDrive.set(0);
             rightFrontDrive.set(0);
@@ -209,7 +207,6 @@ public class MecanumDriveTrain extends OpMode {
             telemetry.addLine("Trying to turn");
             //driveTrain.rotateClockwise(10,1);
             mecanumDrive.driveRobotCentric(strafe,drive,turn);
-
             mecanumDrive.setRotationPower(1);
         }else if(turn < 0) {
             telemetry.addLine("Trying to turn");
@@ -333,4 +330,3 @@ public class MecanumDriveTrain extends OpMode {
     //test commit
 
 }
-
