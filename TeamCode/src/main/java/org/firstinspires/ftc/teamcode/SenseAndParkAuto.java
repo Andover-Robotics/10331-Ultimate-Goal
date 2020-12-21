@@ -64,7 +64,7 @@ public class SenseAndParkAuto extends LinearOpMode {
             telemetry.addData("Thread Active", positionThread.isAlive());
             telemetry.update();
 
-
+            // NOTE: we need to figure out how to move (using the pivot correction and x component and y component (see goToPosition()) line 193
             // start coding here
             /*  GETTING THE ROBOT READY TO SENSE - pull up to the stack
             Drive forward 24 inches (plus space from robot to first tile line)
@@ -94,6 +94,22 @@ public class SenseAndParkAuto extends LinearOpMode {
                         Drive 36 (1.5) forward 12 (.5) right
                 }
              } */
+            int rings = 4;
+            int yellowValTemp = 0; // this is temp bc we dont actually know the val- subst later for range of values
+
+            if(color_sensor.argb() < yellowValTemp){
+                // this is at the height of 2 rings and it doesnt sense them it rotates the servo
+                //move the servo down 45 degrees
+                colorSenseServo.setPosition(colorSenseServo.getPosition() + 90); // going off teh basis of 90 degrees that moves in close to right above the stack
+                if(color_sensor.argb() == yellowValTemp){ // this senses the 1 ring
+                    rings = 1;
+                }else{
+                    // if it doesnt sense yellow make decision that it is 0 (maybe if this doesnt work make another step to check if the servo can tilt down more to see grey
+                    rings =0;
+                }
+            }
+
+
 
             /*ROBOT MOVES TO WHITE LINE AFTER DROPING OFF WG*/
             /*
@@ -124,6 +140,8 @@ public class SenseAndParkAuto extends LinearOpMode {
         globalPositionUpdate.stop();
 
     }
+
+    // NOT USING THIS ANYMORE BECAUSE NOT GOOD IN METHOD FORM
     public int senseRings(){ // sensing rings on ground
       // servo use based off the assumption that servo starts at angle 0 degrees
       int rings = 4;
