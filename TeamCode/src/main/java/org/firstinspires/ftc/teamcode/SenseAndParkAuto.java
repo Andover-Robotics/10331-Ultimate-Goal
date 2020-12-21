@@ -36,6 +36,7 @@ public class SenseAndParkAuto extends LinearOpMode {
         telemetry.addData("Status", "Init Complete");
         telemetry.update();
         waitForStart();
+
        // servo.setPosition(servo.getPosition() + 90);
         // get a reference to the color sensor.
         color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
