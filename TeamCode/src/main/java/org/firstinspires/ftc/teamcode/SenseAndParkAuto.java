@@ -48,6 +48,7 @@ public class SenseAndParkAuto extends LinearOpMode {
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseNormalEncoder();
 
+
         while(opModeIsActive()){
             // this is where our actual code should go using all of the methods that we have
             //Display Global (x, y, theta) coordinates
@@ -61,6 +62,61 @@ public class SenseAndParkAuto extends LinearOpMode {
 
             telemetry.addData("Thread Active", positionThread.isAlive());
             telemetry.update();
+
+
+            // start coding here
+            /*  GETTING THE ROBOT READY TO SENSE - pull up to the stack
+            Drive forward 24 inches (plus space from robot to first tile line)
+            Move left to sensor
+
+            *ideally: move diagonally but depends on how easy it is to move wobble goal
+
+             */
+
+
+            /*
+            IMPLEMENT COLOR SENSOR AND ITS USE
+            if(sense color) {
+                rings=4
+                Drive 84 (3.5) forward 12 right (.5)
+                Drive back 48 (2) inches
+            }
+                else {
+                    tilt down
+                    if(sense color){
+                        rings = 1
+                        Drive 60 (2.5) forward 12 (.5) left
+                Drive back 24 inches
+                    }
+                    else{
+                        rings = 0
+                        Drive 36 (1.5) forward 12 (.5) right
+                }
+             } */
+
+            /*ROBOT MOVES TO WHITE LINE AFTER DROPING OFF WG*/
+            /*
+            if(sense color) {
+                rings=4
+                Drive 84 (3.5) forward 12 right (.5)
+                Drive back 48 (2)
+            }
+            else {
+                tilt down
+                if(sense color){
+                    rings = 1
+                    Drive 60 (2.5) forward 12 (.5) left
+            Drive back 24 inches (1)
+                }
+                else{
+                    rings = 0
+                    Drive 36 (1.5) forward 12 (.5) right
+               }
+            }
+
+             */
+
+
         }
 
         //Stop the thread
@@ -71,7 +127,9 @@ public class SenseAndParkAuto extends LinearOpMode {
       // servo use based off the assumption that servo starts at angle 0 degrees
       int rings = 4;
       int yellowValTemp = 0; // this is temp bc we dont actually know the val- subst later for range of values
-      if(color_sensor.argb() < yellowValTemp){ // this is at the height of 2 rings
+
+      if(color_sensor.argb() < yellowValTemp){
+          // this is at the height of 2 rings and it doesnt sense them it rotates the servo
          //move the servo down 45 degrees
            colorSenseServo.setPosition(colorSenseServo.getPosition() + 90); // going off teh basis of 90 degrees that moves in close to right above the stack
          if(color_sensor.argb() == yellowValTemp){ // this senses the 1 ring
