@@ -97,16 +97,23 @@ public class SenseAndParkAuto extends LinearOpMode {
             int rings = 4;
             int yellowValTemp = 0; // this is temp bc we dont actually know the val- subst later for range of values
 
-            if(color_sensor.argb() < yellowValTemp){
+            if(color_sensor.argb() < yellowValTemp){ // wasnt the right color
                 // this is at the height of 2 rings and it doesnt sense them it rotates the servo
                 //move the servo down 45 degrees
                 colorSenseServo.setPosition(colorSenseServo.getPosition() + 90); // going off teh basis of 90 degrees that moves in close to right above the stack
                 if(color_sensor.argb() == yellowValTemp){ // this senses the 1 ring
                     rings = 1;
+                    //Drive 60 (2.5) forward 12 (.5) left
                 }else{
                     // if it doesnt sense yellow make decision that it is 0 (maybe if this doesnt work make another step to check if the servo can tilt down more to see grey
                     rings =0;
+                    //Drive 36 (1.5) forward 12 (.5) right
                 }
+            }else{
+                /*
+                Drive 84 (3.5) forward 12 right (.5)
+                Drive back 48 (2) inches
+                 */
             }
 
 
@@ -117,7 +124,20 @@ public class SenseAndParkAuto extends LinearOpMode {
                 rings=4
                 Drive 84 (3.5) forward 12 right (.5)
                 Drive back 48 (2)
+            }*/
+
+
+
+            int ringsTemp = 4; // for testing purposess
+            int tempColor = 0 ; // initializing only requires ONE equals sign
+            //conditional statements : while / if and else
+            /*if(tempColor == color_sensor.argb() ){
+              /*
+              Drive 84 (3.5) forward 12 right (.5)
+              Drive back 48 (2)
+               */
             }
+            /*
             else {
                 tilt down
                 if(sense color){
@@ -125,6 +145,21 @@ public class SenseAndParkAuto extends LinearOpMode {
                     Drive 60 (2.5) forward 12 (.5) left
             Drive back 24 inches (1)
                 }
+                */
+           /* else{
+                colorSenseServo.setPosition(colorSenseServo.getPosition() + 90);
+                if(color_sensor.argb()== tempColor ){
+                    ringsTemp = 1;
+                    /*
+                    Drive 60 (2.5) forward 12 (.5) left
+                   Drive back 24 inches (1)
+
+                  */
+              /*  }
+
+
+            }
+            /*
                 else{
                     rings = 0
                     Drive 36 (1.5) forward 12 (.5) right
@@ -134,7 +169,7 @@ public class SenseAndParkAuto extends LinearOpMode {
              */
 
 
-        }
+        /*}*/
 
         //Stop the thread
         globalPositionUpdate.stop();
