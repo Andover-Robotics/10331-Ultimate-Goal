@@ -25,6 +25,9 @@ public class SenseAndParkAuto extends LinearOpMode {
     String verticalLeftEncoder = rightBackDrive, verticalRightEncoder = leftFrontDrive, horizontalEncoder= rightFrontDrive;
 
    OdometryGlobalCoordinatePosition globalPositionUpdate;
+    double robot_movement_x_component = 0;
+    double robot_movement_y_component = 0;
+    double pivotCorrection = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -52,6 +55,10 @@ public class SenseAndParkAuto extends LinearOpMode {
 
 
         while(opModeIsActive()){
+
+            //  DISCLAIMER: THIS AUTO ATM IS ONLY WORKING WHEN WE ARE IN THE RED TEAM POSITIONED AT THE FAR RIGHT STARTING ZONE!!
+            // NOTE: think about making an auto that has adjustment to
+
             // this is where our actual code should go using all of the methods that we have
             //Display Global (x, y, theta) coordinates
             telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
@@ -65,6 +72,12 @@ public class SenseAndParkAuto extends LinearOpMode {
             telemetry.addData("Thread Active", positionThread.isAlive());
             telemetry.update();
 
+            /*
+            notes about robot power:
+            yo code peeps
+            when you're testing the robot, you're gonna need to put the motors at half the speed you usually would
+            the miter gears we're planning on using eventually will be a 1:1 ratio but the bevel gears we're borrowing from Lightning are 2:1, so the wheels will be spinning twice as fast as whatever you set the motor to
+             */
             // NOTE: we need to figure out how to move (using the pivot correction and x component and y component (see goToPosition()) line 193
             // start coding here
             /*  GETTING THE ROBOT READY TO SENSE - pull up to the stack
@@ -81,6 +94,7 @@ public class SenseAndParkAuto extends LinearOpMode {
             if(sense color) {
                 rings=4
                 Drive 84 (3.5) forward 12 right (.5)
+
                 Drive back 48 (2) inches
             }
                 else {
@@ -104,17 +118,42 @@ public class SenseAndParkAuto extends LinearOpMode {
                 colorSenseServo.setPosition(colorSenseServo.getPosition() + 90); // going off teh basis of 90 degrees that moves in close to right above the stack
                 if(color_sensor.argb() == yellowValTemp){ // this senses the 1 ring
                     rings = 1;
+
                     //Drive 60 (2.5) forward 12 (.5) left
+                    // robotPower (?) -> gear to wheel ratio
+                    // under the assumption that 0 = forwards (for robot orientation)
+                    // allowable distance error (put at 1 inch for now since we dont know what to do lol)
+
+                    goToPosition(-12*COUNTS_PER_INCH,60*COUNTS_PER_INCH,0.5,0, 1*COUNTS_PER_INCH);
+                    setPowerAllMotors(robot_movement_x_component ,  robot_movement_y_component ,pivotCorrection);
+                    //  DISCLAIMER : SUBJ. TO CHANGE BECAUSE WE DONT KNOW IF THE WG WILL FALL OUT OF THE LITTLE POSITION THING WHEN WE STRAFE
+                    //under the assumption that the wheels just move with setPower
+                    //double targetXPosition, double targetYPosition, double robotPower, double desiredRobotOrientation, double allowableDistanceError) {
+
+                    goToPosition(0*COUNTS_PER_INCH,24*COUNTS_PER_INCH,0.5,0, 1*COUNTS_PER_INCH);
+                    setPowerAllMotors(robot_movement_x_component ,  robot_movement_y_component ,pivotCorrection);
                 }else{
                     // if it doesnt sense yellow make decision that it is 0 (maybe if this doesnt work make another step to check if the servo can tilt down more to see grey
                     rings =0;
                     //Drive 36 (1.5) forward 12 (.5) right
+                    goToPosition(12*COUNTS_PER_INCH,36*COUNTS_PER_INCH,0.5,0, 1*COUNTS_PER_INCH);
+                    setPowerAllMotors(robot_movement_x_component ,  robot_movement_y_component ,pivotCorrection);
+
                 }
             }else{
                 /*
                 Drive 84 (3.5) forward 12 right (.5)
                 Drive back 48 (2) inches
                  */
+                goToPosition(12*COUNTS_PER_INCH,84*COUNTS_PER_INCH,0.5,0, 1*COUNTS_PER_INCH);
+
+                setPowerAllMotors(robot_movement_x_component ,  robot_movement_y_component ,pivotCorrection);
+
+
+                goToPosition(0*COUNTS_PER_INCH,48*COUNTS_PER_INCH,0.5,0, 1*COUNTS_PER_INCH);
+
+                setPowerAllMotors(robot_movement_x_component ,  robot_movement_y_component ,pivotCorrection);
+
             }
 
 
@@ -177,6 +216,12 @@ public class SenseAndParkAuto extends LinearOpMode {
 
     }
 
+    public void setPowerAllMotors (double xComp, double yComp, double pivCor){ // this is using the variables
+        left_front.setPower(xComp +  yComp  - pivCor);
+        right_front.setPower(-xComp + yComp + pivCor);
+        left_back.setPower(-xComp + yComp - pivCor);
+        right_back.setPower(xComp + yComp + pivCor);
+    }
     // NOT USING THIS ANYMORE BECAUSE NOT GOOD IN METHOD FORM
     public int senseRings(){ // sensing rings on ground
       // servo use based off the assumption that servo starts at angle 0 degrees
@@ -256,10 +301,11 @@ public class SenseAndParkAuto extends LinearOpMode {
 
             double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
 
-            double robot_movement_x_component = calculateX(robotMovementAngle, robotPower);
-            double robot_movement_y_component = calculateY(robotMovementAngle, robotPower);
-            double pivotCorrection = desiredRobotOrientation - globalPositionUpdate.returnOrientation(); // this returns : ?? an angle
+            robot_movement_x_component = calculateX(robotMovementAngle, robotPower);
+            robot_movement_y_component = calculateY(robotMovementAngle, robotPower);
+            pivotCorrection = desiredRobotOrientation - globalPositionUpdate.returnOrientation(); // this returns : ?? an angle
             // maybe write a method that uses these 3 values t
+            //get robots roation from 3-wheel odometry
         }
     }
 
