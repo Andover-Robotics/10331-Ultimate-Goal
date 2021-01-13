@@ -68,7 +68,7 @@ public class MecanumDriveTrain2 extends OpMode {
     //NEW FLYWHEELS
     private DcMotor intakeFlywheel, outtakeFlywheel;
     // boolean to see if Flywheels are running
-    private boolean runFlywheelsForward = false, runFlywheelsBackwards = false, stop=false, runServosForward=false, runServosBackward=false;
+    private boolean runIntakeForward = false, runOuttakeForward = false, stop=false, runServosForward=false, runServosBackward=false;
     //Using ARC-Core's Mecanum Drive class, we initialized a Mecanum Drive as seen below
     private MecanumDrive mecanumDrive; // this is the object that we will be using to control the mecanum drive
 
@@ -222,24 +222,28 @@ public class MecanumDriveTrain2 extends OpMode {
 
         //when 'a' button is pressed and front flywheels are not running, set bool to true
         if (gamepad2.a) {
-            runFlywheelsBackwards = false;
-            runFlywheelsForward = true;
+            if(!runIntakeForward){
+                runIntakeForward = true;
+            }
+            if(runIntakeForward) {
+                runIntakeForward = false;
+            }
+            // when 'a' button is pressed and front flywheels are not running, set bool to true
             // when 'a' button is pressed and front flywheels are running, set bool to false
-        } //else if (gamepad2.a && runFlywheelsForward) {
-        //runFlywheelsForward = false;
-        //}
-
-        else if (gamepad2.b) {
-            runFlywheelsForward = false;
-            runFlywheelsBackwards = true;
         }
 
-        else if (gamepad2.x) {
-            runFlywheelsForward = false;
-            runFlywheelsBackwards = false;
+        if (gamepad2.b) {
+            if (!runOuttakeForward) {
+                runOuttakeForward = true;
+            }
+            if (runOuttakeForward) {
+                runOuttakeForward = false;
+            }
+            // when 'b' button is pressed and front flywheels are not running, set bool to true
+            // when 'b' button is pressed and front flywheels are running, set bool to false
         }
 
-        //run flywheels at full power when bool true
+            //run flywheels at full power when bool true
 
         /*if (!runFlywheelsBackwards) {
             if (runFlywheelsForward) {
@@ -252,17 +256,14 @@ public class MecanumDriveTrain2 extends OpMode {
         }*/
 
 
-
-        if (!runFlywheelsBackwards && !runFlywheelsForward) {
-            intakeFlywheel.setPower(0);
-            outtakeFlywheel.setPower(0);
-        }else if (runFlywheelsForward) {
-            intakeFlywheel.setPower(1);
-            outtakeFlywheel.setPower(-1);
-        }else {
-            intakeFlywheel.setPower(-1);
-            outtakeFlywheel.setPower(1);
-        }
+            if (!runOuttakeForward && !runIntakeForward) {
+                intakeFlywheel.setPower(0);
+                outtakeFlywheel.setPower(0);
+            } else if (runIntakeForward) {
+                intakeFlywheel.setPower(1);
+            } else if (runOuttakeForward) {
+                outtakeFlywheel.setPower(1);
+            }
 
         //when 'b' button is pressed and back flywheels are not running, set bool to true
         /*if (gamepad2.b && !runFlywheelsBackwards && !runFlywheelsForward) {
@@ -319,7 +320,6 @@ public class MecanumDriveTrain2 extends OpMode {
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-    }
     //test
 
     /*
