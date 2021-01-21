@@ -68,12 +68,13 @@ public class MecanumDriveTrain2 extends OpMode {
     //NEW FLYWHEELS
     private DcMotor intakeFlywheel, outtakeFlywheel;
     // boolean to see if Flywheels are running
-    private boolean runIntakeForward = false, runOuttakeForward = false, stop=false, runServosForward=false, runServosBackward=false;
+    private boolean runIntakeForward = false, runOuttakeForward = false, stop = false, runServosForward = false, runServosBackward = false;
     //Using ARC-Core's Mecanum Drive class, we initialized a Mecanum Drive as seen below
     private MecanumDrive mecanumDrive; // this is the object that we will be using to control the mecanum drive
 
     // New servo to move foundation
     private Servo servo;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -154,8 +155,8 @@ public class MecanumDriveTrain2 extends OpMode {
     @Override
     public void loop() {
         count++;
-        telemetry.addLine(((Integer)count).toString());
-        telemetry.addData("LF Flywheel Power: ",  intakeFlywheel.getPower());
+        telemetry.addLine(((Integer) count).toString());
+        telemetry.addData("LF Flywheel Power: ", intakeFlywheel.getPower());
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -222,10 +223,10 @@ public class MecanumDriveTrain2 extends OpMode {
 
         //when 'a' button is pressed and front flywheels are not running, set bool to true
         if (gamepad2.a) {
-            if(!runIntakeForward){
+            if (!runIntakeForward) {
                 runIntakeForward = true;
             }
-            if(runIntakeForward) {
+            if (runIntakeForward) {
                 runIntakeForward = false;
             }
             // when 'a' button is pressed and front flywheels are not running, set bool to true
@@ -243,7 +244,7 @@ public class MecanumDriveTrain2 extends OpMode {
             // when 'b' button is pressed and front flywheels are running, set bool to false
         }
 
-            //run flywheels at full power when bool true
+        //run flywheels at full power when bool true
 
         /*if (!runFlywheelsBackwards) {
             if (runFlywheelsForward) {
@@ -256,14 +257,14 @@ public class MecanumDriveTrain2 extends OpMode {
         }*/
 
 
-            if (!runOuttakeForward && !runIntakeForward) {
-                intakeFlywheel.setPower(0);
-                outtakeFlywheel.setPower(0);
-            } else if (runIntakeForward) {
-                intakeFlywheel.setPower(1);
-            } else if (runOuttakeForward) {
-                outtakeFlywheel.setPower(1);
-            }
+        if (!runOuttakeForward && !runIntakeForward) {
+            intakeFlywheel.setPower(0);
+            outtakeFlywheel.setPower(0);
+        } else if (runIntakeForward) {
+            intakeFlywheel.setPower(1);
+        } else if (runOuttakeForward) {
+            outtakeFlywheel.setPower(1);
+        }
 
         //when 'b' button is pressed and back flywheels are not running, set bool to true
         /*if (gamepad2.b && !runFlywheelsBackwards && !runFlywheelsForward) {
@@ -288,19 +289,19 @@ public class MecanumDriveTrain2 extends OpMode {
         if (gamepad1.a) {
             runServosForward = true;
             runServosBackward = false;
-        }else if (gamepad1.b) {
+        } else if (gamepad1.b) {
             runServosBackward = true;
             runServosForward = false;
-        }else if (gamepad1.x) {
+        } else if (gamepad1.x) {
             runServosForward = false;
             runServosBackward = false;
         }
 
         if (!runServosBackward && !runServosForward) {
             servo.setPosition(servo.getPosition() + 90);
-        }else if (runServosForward) {
+        } else if (runServosForward) {
             servo.setPosition(servo.getPosition() - 90);
-        }else {
+        } else {
             servo.setPosition(servo.getPosition());
         }
 
@@ -320,16 +321,19 @@ public class MecanumDriveTrain2 extends OpMode {
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-    //test
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
+        //test
     }
 
+        /*
+         * Code to run ONCE after the driver hits STOP
+         */
+        @Override
+        public void stop () {
 
-    //test commit
+        }
 
-}
+
+
+        //test commit
+
+    }

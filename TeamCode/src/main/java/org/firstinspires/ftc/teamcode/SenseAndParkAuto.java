@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Odometry.OdometryGlobalCoordinatePosition;
 
-@TeleOp(name = "My Odometry OpMode")
+@TeleOp(name = "Sense and park")
 public class SenseAndParkAuto extends LinearOpMode {
     //Drive motors
     DcMotor right_front, right_back, left_front, left_back;
