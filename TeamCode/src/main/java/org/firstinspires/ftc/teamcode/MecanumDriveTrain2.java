@@ -32,9 +32,10 @@ import com.arcrobotics.ftclib.drivebase.*;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-
+import  com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -61,19 +62,21 @@ import com.qualcomm.robotcore.util.Range;
 
 //@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Tank Drive TeleOp", group = "Iterative Opmode")
 //@Disabled
+//@TeleOp(name = "Mecanum Drive Train")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Mecanum Drive TeleOp", group = "Iterative Opmode")
 public class MecanumDriveTrain2 extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private Motor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
+    private MotorEx leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
     //NEW FLYWHEELS
-    private DcMotor intakeFlywheel, outtakeFlywheel;
+    //private DcMotor intakeFlywheel, outtakeFlywheel;
     // boolean to see if Flywheels are running
     private boolean runIntakeForward = false, runOuttakeForward = false, stop = false, runServosForward = false, runServosBackward = false;
     //Using ARC-Core's Mecanum Drive class, we initialized a Mecanum Drive as seen below
-    private MecanumDrive mecanumDrive; // this is the object that we will be using to control the mecanum drive
+    MecanumDrive mecanumDrive; // this is the object that we will be using to control the mecanum drive
 
     // New servo to move foundation
-    private Servo servo;
+    //private Servo servo;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -85,12 +88,13 @@ public class MecanumDriveTrain2 extends OpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive = hardwareMap.get(Motor.class, "leftFrontDrive");
-        leftBackDrive = hardwareMap.get(Motor.class, "leftBackDrive");
-        rightFrontDrive = hardwareMap.get(Motor.class, "rightFrontDrive");
-        rightBackDrive = hardwareMap.get(Motor.class, "rightBackDrive");
 
-        intakeFlywheel = hardwareMap.get(DcMotor.class, "intakeFlywheel");
+        leftFrontDrive = new MotorEx(hardwareMap, "leftFrontDrive",Motor.GoBILDA.RPM_312);
+        leftBackDrive = new MotorEx(hardwareMap, "leftBackDrive",Motor.GoBILDA.RPM_312);
+        rightFrontDrive = new MotorEx(hardwareMap, "rightFrontDrive",Motor.GoBILDA.RPM_312);
+        rightBackDrive = new MotorEx(hardwareMap, "rightBackDrive",Motor.GoBILDA.RPM_312);
+
+        //intakeFlywheel = hardwareMap.get(DcMotor.class, "intakeFlywheel");
         //outtakeFlywheel = hardwareMap.get(DcMotor.class, "outtakeFlywheel");
 
         // servo = hardwareMap.get(Servo.class, "servo");
@@ -102,11 +106,11 @@ public class MecanumDriveTrain2 extends OpMode {
         //mecanumDrive.setRunMode(Motor.RunMode.PositionControl);
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftFrontDrive.setRunMode(Motor.RunMode.RawPower); // setting direction for REGULAR motors?
+        leftFrontDrive.setRunMode(MotorEx.RunMode.RawPower); // setting direction for REGULAR motors?
         // what is position control (ask michael!)
-        leftBackDrive.setRunMode(Motor.RunMode.RawPower);
-        rightFrontDrive.setRunMode(Motor.RunMode.RawPower);
-        rightBackDrive.setRunMode(Motor.RunMode.RawPower);
+        leftBackDrive.setRunMode(MotorEx.RunMode.RawPower);
+        rightFrontDrive.setRunMode(MotorEx.RunMode.RawPower);
+        rightBackDrive.setRunMode(MotorEx.RunMode.RawPower);
 
         /*leftFrontDrive.setDirection(Motor.Direction.FORWARD); // setting direction for REGULAR motors?
         leftBackDrive.setDirection(Motor.Direction.FORWARD);
@@ -114,8 +118,8 @@ public class MecanumDriveTrain2 extends OpMode {
         rightBackDrive.setDirection(Motor.Direction.REVERSE);*/
 
         // Flywheels move backwards to move blocks inward
-        intakeFlywheel.setDirection(DcMotor.Direction.REVERSE);
-        outtakeFlywheel.setDirection(DcMotor.Direction.REVERSE);
+        //intakeFlywheel.setDirection(DcMotor.Direction.REVERSE);
+        //outtakeFlywheel.setDirection(DcMotor.Direction.REVERSE);
 
         /*leftFrontFlywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBackFlywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -140,8 +144,8 @@ public class MecanumDriveTrain2 extends OpMode {
     @Override
     public void start() {
         runtime.reset();
-        intakeFlywheel.setPower(0); //since these are Dcmotors they can use the fucntion
-        outtakeFlywheel.setPower(0);
+        //intakeFlywheel.setPower(0); //since these are Dcmotors they can use the fucntion
+        //outtakeFlywheel.setPower(0);
 
 
     }
@@ -156,7 +160,7 @@ public class MecanumDriveTrain2 extends OpMode {
     public void loop() {
         count++;
         telemetry.addLine(((Integer) count).toString());
-        telemetry.addData("LF Flywheel Power: ", intakeFlywheel.getPower());
+        //telemetry.addData("LF Flywheel Power: ", intakeFlywheel.getPower());
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -257,14 +261,14 @@ public class MecanumDriveTrain2 extends OpMode {
         }*/
 
 
-        if (!runOuttakeForward && !runIntakeForward) {
+      /*  if (!runOuttakeForward && !runIntakeForward) {
             intakeFlywheel.setPower(0);
             outtakeFlywheel.setPower(0);
         } else if (runIntakeForward) {
             intakeFlywheel.setPower(1);
         } else if (runOuttakeForward) {
             outtakeFlywheel.setPower(1);
-        }
+        }*/
 
         //when 'b' button is pressed and back flywheels are not running, set bool to true
         /*if (gamepad2.b && !runFlywheelsBackwards && !runFlywheelsForward) {
@@ -286,7 +290,7 @@ public class MecanumDriveTrain2 extends OpMode {
             }
         }*/
 
-        if (gamepad1.a) {
+        /*if (gamepad1.a) {
             runServosForward = true;
             runServosBackward = false;
         } else if (gamepad1.b) {
@@ -303,7 +307,7 @@ public class MecanumDriveTrain2 extends OpMode {
             servo.setPosition(servo.getPosition() - 90);
         } else {
             servo.setPosition(servo.getPosition());
-        }
+        }*/
 
 
         // Tank Mode uses one stick to control each wheel.
