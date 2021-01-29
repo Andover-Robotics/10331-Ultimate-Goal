@@ -1,32 +1,33 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import  com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
+/*NOTE: idk consider switching to MotorEx or Motor if DcMotor doesnt work out*/
 import org.firstinspires.ftc.teamcode.Odometry.OdometryGlobalCoordinatePosition;
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Actual Auto", group = "Linear Opmode")
 
-public class SenseAndParkAuto extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Sense And Park Auto 1", group = "Linear Opmode")
+public class SenseAndParkAuto1 extends LinearOpMode {
     //Drive motors
-    DcMotor right_front, right_back, left_front, left_back;
+    MotorEx right_front, right_back, left_front, left_back;
     //Odometry Wheels
-    Motor verticalLeft, verticalRight, horizontal; // i know that these are for the deadwheels (are these called DCMotor so we can configre them onto the hub?)
+    DcMotor verticalLeft, verticalRight, horizontal; // i know that these are for the deadwheels (are these called DCMotor so we can configre them onto the hub?)
     final double COUNTS_PER_INCH = 307.699557;
     Servo colorSenseServo;
     ColorSensor color_sensor;
-    MotorEx intakeMotor, outtakeMotor;  // did we initialize this yet
+    DcMotor intakeMotor, outtakeMotor;  // did we initialize this yet
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
-    String rightFrontDrive = "rf", rightBackDrive = "rb", leftFrontDrive = "lf", leftBackDrive = "lb";
+    String rightFrontDrive = "rightFrontDrive", rightBackDrive = "rightBackDrive", leftFrontDrive = "leftFrontDrive", leftBackDrive = "leftFrontDrive";
     String verticalLeftEncoder = rightBackDrive, verticalRightEncoder = leftFrontDrive, horizontalEncoder= rightFrontDrive;
 
-   OdometryGlobalCoordinatePosition globalPositionUpdate;
+    OdometryGlobalCoordinatePosition globalPositionUpdate;
     double robot_movement_x_component = 0;
     double robot_movement_y_component = 0;
     double pivotCorrection = 0;
@@ -35,15 +36,15 @@ public class SenseAndParkAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //Initialize hardware map values. PLEASE UPDATE THESE VALUES TO MATCH YOUR CONFIGURATION
         initDriveHardwareMap(rightFrontDrive, rightBackDrive, leftFrontDrive, leftBackDrive, verticalLeftEncoder, verticalRightEncoder, horizontalEncoder);
-        //method above used for only mecanum drive 
+        //method above used for only mecanum drive
         colorSenseServo = hardwareMap.get(Servo.class, "colorSenseServo");
-        //intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-        //outtakeMotor = hardwareMap.get(DcMotor.class, "outtakeMotor" );
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        outtakeMotor = hardwareMap.get(DcMotor.class, "outtakeMotor" );
         telemetry.addData("Status", "Init Complete");
         telemetry.update();
         waitForStart();
 
-       // servo.setPosition(servo.getPosition() + 90);
+        // servo.setPosition(servo.getPosition() + 90);
         // get a reference to the color sensor.
         color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
 
@@ -178,7 +179,7 @@ public class SenseAndParkAuto extends LinearOpMode {
               Drive 84 (3.5) forward 12 right (.5)
               Drive back 48 (2)
                */
-            }
+        }
             /*
             else {
                 tilt down
@@ -219,48 +220,47 @@ public class SenseAndParkAuto extends LinearOpMode {
     }
 
     public void setPowerAllMotors (double xComp, double yComp, double pivCor){ // this is using the variables
-        left_front.setPower(xComp +  yComp  - pivCor);
-        right_front.setPower(-xComp + yComp + pivCor);
-        left_back.setPower(-xComp + yComp - pivCor);
-        right_back.setPower(xComp + yComp + pivCor);
+        left_front.set(xComp +  yComp  - pivCor);
+        right_front.set(-xComp + yComp + pivCor);
+        left_back.set(-xComp + yComp - pivCor);
+        right_back.set(xComp + yComp + pivCor);
     }
     // NOT USING THIS ANYMORE BECAUSE NOT GOOD IN METHOD FORM
     public int senseRings(){ // sensing rings on ground
-      // servo use based off the assumption that servo starts at angle 0 degrees
-      int rings = 4;
-      int yellowValTemp = 0; // this is temp bc we dont actually know the val- subst later for range of values
+        // servo use based off the assumption that servo starts at angle 0 degrees
+        int rings = 4;
+        int yellowValTemp = 0; // this is temp bc we dont actually know the val- subst later for range of values
 
-      if(color_sensor.argb() < yellowValTemp){
-          // this is at the height of 2 rings and it doesnt sense them it rotates the servo
-         //move the servo down 45 degrees
-           colorSenseServo.setPosition(colorSenseServo.getPosition() + 90); // going off teh basis of 90 degrees that moves in close to right above the stack
-         if(color_sensor.argb() == yellowValTemp){ // this senses the 1 ring
-             rings = 1;
-         }else{
-             // if it doesnt sense yellow make decision that it is 0 (maybe if this doesnt work make another step to check if the servo can tilt down more to see grey
-             rings =0;
-         }
-      }
-      // look into the argb color sensor stuff - does it use hex code instead of 3 singular numbers
+        if(color_sensor.argb() < yellowValTemp){
+            // this is at the height of 2 rings and it doesnt sense them it rotates the servo
+            //move the servo down 45 degrees
+            colorSenseServo.setPosition(colorSenseServo.getPosition() + 90); // going off teh basis of 90 degrees that moves in close to right above the stack
+            if(color_sensor.argb() == yellowValTemp){ // this senses the 1 ring
+                rings = 1;
+            }else{
+                // if it doesnt sense yellow make decision that it is 0 (maybe if this doesnt work make another step to check if the servo can tilt down more to see grey
+                rings =0;
+            }
+        }
+        // look into the argb color sensor stuff - does it use hex code instead of 3 singular numbers
       /* using RGB to determine yellow - will test when we get to in person
       if(color_sensor.red() > 200 && color_sensor.blue() > 200 && color_sensor.green() < 40)
        */
-      return rings;
+        return rings;
     }
 
 
     private void initDriveHardwareMap(String rfName, String rbName, String lfName, String lbName, String vlEncoderName, String vrEncoderName, String hEncoderName){
-        right_front = hardwareMap.dcMotor.get(rfName);
-        right_back = hardwareMap.dcMotor.get(rbName);
-        left_front = hardwareMap.dcMotor.get(lfName);
-        left_back = hardwareMap.dcMotor.get(lbName);
-
+        right_front = new MotorEx(hardwareMap,rfName,MotorEx.GoBILDA.RPM_312);
+        right_back = new MotorEx(hardwareMap,rbName,MotorEx.GoBILDA.RPM_312);
+        left_front = new MotorEx(hardwareMap, lfName,MotorEx.GoBILDA.RPM_312);
+        left_back = new MotorEx(hardwareMap,lbName,MotorEx.GoBILDA.RPM_312);
 
         verticalLeft = hardwareMap.dcMotor.get(vlEncoderName);
         verticalRight = hardwareMap.dcMotor.get(vrEncoderName);
         horizontal = hardwareMap.dcMotor.get(hEncoderName);
 
-        right_front.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      /*  right_front.setRunMode(MotorEx.RunMode.STOP_AND_RESET_ENCODER);
         right_back.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_front.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_back.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -268,7 +268,7 @@ public class SenseAndParkAuto extends LinearOpMode {
         right_front.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         right_back.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         left_front.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        left_back.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        left_back.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
 
         verticalLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         verticalRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -279,14 +279,14 @@ public class SenseAndParkAuto extends LinearOpMode {
         horizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        right_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_front.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
+        right_back.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
+        left_front.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
+        left_back.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
 
-        left_front.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_front.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_back.setDirection(DcMotorSimple.Direction.REVERSE);
+        left_front.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        right_front.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        right_back.motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status", "Hardware Map Init Complete");
         telemetry.update();
@@ -297,7 +297,7 @@ public class SenseAndParkAuto extends LinearOpMode {
         double distanceToYTarget = targetYPosition - globalPositionUpdate.returnYCoordinate();
 
         double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
-        
+
         while(opModeIsActive() && distance > allowableDistanceError){
             distanceToXTarget = targetXPosition - globalPositionUpdate.returnXCoordinate();
             distanceToYTarget = targetYPosition - globalPositionUpdate.returnYCoordinate();
@@ -332,3 +332,4 @@ public class SenseAndParkAuto extends LinearOpMode {
         return Math.cos(Math.toRadians(desiredAngle)) * speed;
     }
 }
+

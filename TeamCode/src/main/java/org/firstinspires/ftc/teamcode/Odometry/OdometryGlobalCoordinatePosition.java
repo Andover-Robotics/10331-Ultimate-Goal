@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Odometry;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
@@ -45,9 +46,9 @@ public class OdometryGlobalCoordinatePosition implements Runnable{
      * @param threadSleepDelay delay in milliseconds for the GlobalPositionUpdate thread (50-75 milliseconds is suggested)
      */
     public OdometryGlobalCoordinatePosition(DcMotor verticalEncoderLeft, DcMotor verticalEncoderRight, DcMotor horizontalEncoder, double COUNTS_PER_INCH, int threadSleepDelay){
-        this.verticalEncoderLeft = verticalEncoderLeft;
-        this.verticalEncoderRight = verticalEncoderRight;
-        this.horizontalEncoder = horizontalEncoder;
+        this.verticalEncoderLeft = (DcMotor) verticalEncoderLeft;
+        this.verticalEncoderRight = (DcMotor) verticalEncoderRight;
+        this.horizontalEncoder = (DcMotor) horizontalEncoder;
         sleepTime = threadSleepDelay;
 
         robotEncoderWheelDistance = Double.parseDouble(ReadWriteFile.readFile(wheelBaseSeparationFile).trim()) * COUNTS_PER_INCH;
